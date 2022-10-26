@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://bwrqeyqhmxpy8"]
+
+[ext_resource type="PackedScene" uid="uid://bypm1gauq34qr" path="res://Scenes/LevelElements/Breakables/TestBox.tscn" id="2_aqj6d"]
+[ext_resource type="PackedScene" uid="uid://b7hdb844rxjwt" path="res://Scenes/PlayerElements/Player.tscn" id="2_ogag1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2xc2f"]
+size = Vector3(20.1394, 1, 20.1706)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mrail"]
+
+[node name="TestLevel" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(20, 1, 20)
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_2xc2f")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6567, 1.06504)
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="TestBox" parent="." instance=ExtResource("2_aqj6d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54438, 0.85166, 5.12756)
+
+[node name="TestBox2" parent="." instance=ExtResource("2_aqj6d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.63362, 0.85166, 6.07209)
+
+[node name="TestBox3" parent="." instance=ExtResource("2_aqj6d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.97597, 0.85166, 4.83899)
+
+[node name="Player" parent="." instance=ExtResource("2_ogag1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17896, 0.5, 5.14888)
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -5, 1.88821, 0)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="StaticBody3D2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_mrail")

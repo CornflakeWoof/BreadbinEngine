@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://b7hdb844rxjwt"]
+
+[ext_resource type="Script" path="res://Scripts/Actors/PlayerBase.gd" id="1_mrn12"]
+[ext_resource type="Script" path="res://Scripts/Actors/PlayerCamera.gd" id="2_xgfxi"]
+[ext_resource type="PackedScene" uid="uid://b4uotbjdaf6as" path="res://Meshes/Test/breadbin_knight.tscn" id="3_w27hl"]
+[ext_resource type="Script" path="res://Scripts/Debug/Debug_OwnerVar.gd" id="4_h7cfl"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_gauop"]
+height = 1.72915
+radius = 0.279917
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_mrn12")
+Player_Number = 1
+Actor_Team = 1
+ActorMeshPath = NodePath("BreadbinKnight")
+starting_speed = 4
+
+[node name="Camroot" type="Node3D" parent="."]
+script = ExtResource("2_xgfxi")
+CameraActorMesh = NodePath("")
+
+[node name="h" type="Node3D" parent="Camroot"]
+
+[node name="v" type="Node3D" parent="Camroot/h"]
+
+[node name="Camera3D" type="Camera3D" parent="Camroot/h/v"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 2.5)
+
+[node name="control_stay_delay" type="Timer" parent="Camroot"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89082, 0)
+shape = SubResource("CylinderShape3D_gauop")
+
+[node name="BreadbinKnight" parent="." instance=ExtResource("3_w27hl")]
+
+[node name="Label" type="Label" parent="."]
+offset_left = 62.0
+offset_top = 19.0
+offset_right = 327.0
+offset_bottom = 97.0
+script = ExtResource("4_h7cfl")
+VariableName = "Attack Queued"
+actualvariable = "attack_queued"
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 57.0
+offset_top = 127.0
+offset_right = 322.0
+offset_bottom = 205.0
+script = ExtResource("4_h7cfl")
+VariableName = "Can Combo"
+actualvariable = "can_combo"

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bypm1gauq34qr"]
+
+[ext_resource type="Script" path="res://Scripts/Actors/BGProp_Breakable.gd" id="1_w4d1d"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l48c4"]
+size = Vector3(0.519615, 0.500918, 0.51305)
+
+[node name="TestBox" type="Node3D"]
+script = ExtResource("1_w4d1d")
+BreakableAreaPath = NodePath("Area3D")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 512
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_l48c4")

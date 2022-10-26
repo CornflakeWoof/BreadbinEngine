@@ -1,0 +1,128 @@
+[gd_scene load_steps=13 format=3 uid="uid://b4uotbjdaf6as"]
+
+[ext_resource type="PackedScene" uid="uid://ddjyel1g1ryhx" path="res://Meshes/Test/BreadbinKnight.glb" id="1_sddt1"]
+[ext_resource type="Animation" uid="uid://gg6fs6bf1y5i" path="res://Animations/Humanoid/idle1.res" id="2_ippxf"]
+[ext_resource type="Script" path="res://Scripts/Actors/ActorModelBase.gd" id="2_mg6yo"]
+[ext_resource type="PackedScene" uid="uid://8bagjtuuoqpe" path="res://Scenes/Weapons/DefaultWeapon.tscn" id="2_qvput"]
+[ext_resource type="Animation" uid="uid://1umfm3e35bat" path="res://Animations/Humanoid/sword_backslash.res" id="3_jup5x"]
+[ext_resource type="Animation" uid="uid://c82millmfhen" path="res://Animations/Humanoid/sword_crouchslash.res" id="4_d48ib"]
+[ext_resource type="Animation" uid="uid://q435d3wgeqyo" path="res://Animations/Humanoid/sword_multislash.res" id="5_tve2p"]
+[ext_resource type="Animation" uid="uid://ce7rntpn67d0c" path="res://Animations/Humanoid/sword_rslash.res" id="6_0ljp0"]
+[ext_resource type="Animation" uid="uid://dpnils362cx2i" path="res://Animations/Humanoid/sword_twirlslash.res" id="7_8rs2j"]
+[ext_resource type="Animation" uid="uid://b33a1j4jvi0jt" path="res://Animations/Humanoid/walk.res" id="8_b16tb"]
+[ext_resource type="Script" path="res://Scripts/Actors/ActorAnimationPlayer.gd" id="11_5s7hk"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oh55c"]
+_data = {
+"idle1": ExtResource("2_ippxf"),
+"sword_backslash": ExtResource("3_jup5x"),
+"sword_crouchslash": ExtResource("4_d48ib"),
+"sword_multislash": ExtResource("5_tve2p"),
+"sword_rslash": ExtResource("6_0ljp0"),
+"sword_twirlslash": ExtResource("7_8rs2j"),
+"walk": ExtResource("8_b16tb")
+}
+
+[node name="BreadbinKnight" node_paths=PackedStringArray("LHandWeapon_Bone", "RHandWeapon_Bone", "RootmotionAttachment_Bone", "Skeleton") instance=ExtResource("1_sddt1")]
+script = ExtResource("2_mg6yo")
+LHandWeapon_Bone = NodePath("Armature/GeneralSkeleton/LeftHandWeapon")
+RHandWeapon_Bone = NodePath("Armature/GeneralSkeleton/RightHandWeapon")
+RootmotionAttachment_Bone = NodePath("Armature/GeneralSkeleton/Rootmotion")
+Skeleton = NodePath("Armature/GeneralSkeleton")
+
+[node name="GeneralSkeleton" parent="Armature" index="0"]
+bones/0/position = Vector3(0.000364437, 0.00166051, 0.000240162)
+bones/1/position = Vector3(-0.000537405, 0.925862, 0.00621418)
+bones/1/rotation = Quaternion(0.0228568, -0.105072, -0.00744957, 0.994174)
+bones/2/rotation = Quaternion(0.0828531, 0.0171075, 0.0056774, 0.996399)
+bones/3/rotation = Quaternion(0.0261178, 0.0354576, 0.00787156, 0.998999)
+bones/4/rotation = Quaternion(-0.0770993, 0.0323302, 0.0117719, 0.99643)
+bones/5/rotation = Quaternion(-0.0355852, 0.0173444, -0.0611337, 0.997344)
+bones/6/rotation = Quaternion(0.0467631, -0.00354776, 0.0646284, 0.996807)
+bones/8/rotation = Quaternion(0.707107, -3.78751e-09, -2.33755e-08, 0.707107)
+bones/9/rotation = Quaternion(0.707107, 1.72859e-08, -2.33755e-08, 0.707107)
+bones/10/rotation = Quaternion(0.526389, 0.484, 0.5154, -0.472251)
+bones/11/rotation = Quaternion(0.00949934, 0.807328, -0.589747, 0.0181524)
+bones/12/rotation = Quaternion(0.106712, -0.698462, 0.10532, 0.699764)
+bones/13/rotation = Quaternion(0.0256652, 0.719621, -0.0257252, 0.693415)
+bones/14/rotation = Quaternion(-0.357027, 0.719616, 0.169158, 0.571025)
+bones/15/rotation = Quaternion(0.181691, -0.0185257, 0.0798081, 0.979937)
+bones/16/rotation = Quaternion(0.0315975, 0.00911488, 0.0131101, 0.999373)
+bones/17/rotation = Quaternion(0.0428805, 0.00380808, 0.0373107, 0.998376)
+bones/18/rotation = Quaternion(0.160269, 0.00190662, 0.00708902, 0.987046)
+bones/19/rotation = Quaternion(0.0790557, 4.52995e-05, 0.00366735, 0.996863)
+bones/20/rotation = Quaternion(0.12126, 0.00398426, 0.0168534, 0.99247)
+bones/21/rotation = Quaternion(0.164441, 6.58929e-05, 0.00836155, 0.986351)
+bones/22/rotation = Quaternion(0.173135, 0.000273913, 0.00885221, 0.984858)
+bones/23/rotation = Quaternion(0.169586, 0.0051599, 0.0154451, 0.985381)
+bones/24/rotation = Quaternion(0.195325, 0.000118256, 0.0103967, 0.980684)
+bones/25/rotation = Quaternion(0.169134, 0.00107925, 0.00915035, 0.98555)
+bones/26/rotation = Quaternion(0.217346, 0.00659665, 0.00523129, 0.976058)
+bones/27/rotation = Quaternion(0.160181, 0.00102383, 0.00860924, 0.98705)
+bones/28/rotation = Quaternion(0.152401, -0.00301953, 0.00829291, 0.988279)
+bones/29/rotation = Quaternion(0.525897, -0.484652, -0.515471, -0.472054)
+bones/30/rotation = Quaternion(-0.0109009, 0.828162, -0.558801, 0.0420843)
+bones/31/rotation = Quaternion(0.112795, 0.702284, -0.111396, 0.694021)
+bones/32/rotation = Quaternion(-0.0251817, -0.720649, -0.0122723, 0.692734)
+bones/33/rotation = Quaternion(-0.357027, -0.719616, -0.169158, 0.571025)
+bones/34/rotation = Quaternion(0.181691, 0.0185257, -0.0798086, 0.979937)
+bones/35/rotation = Quaternion(0.0315977, -0.009115, -0.0131099, 0.999373)
+bones/36/rotation = Quaternion(0.0284165, -0.00354695, -0.0366897, 0.998916)
+bones/37/rotation = Quaternion(0.145951, -0.00189371, -0.00655761, 0.989268)
+bones/38/rotation = Quaternion(0.0646085, -2.94149e-05, -0.00301442, 0.997906)
+bones/39/rotation = Quaternion(0.10132, -0.00415786, -0.0158895, 0.994718)
+bones/40/rotation = Quaternion(0.144644, 1.51098e-05, -0.00734916, 0.989456)
+bones/41/rotation = Quaternion(0.153369, -0.000184029, -0.00777629, 0.988138)
+bones/42/rotation = Quaternion(0.148058, -0.00515488, -0.0143318, 0.988861)
+bones/43/rotation = Quaternion(0.17382, -6.88732e-05, -0.00909778, 0.984735)
+bones/44/rotation = Quaternion(0.147493, -0.000982344, -0.00788349, 0.989031)
+bones/45/rotation = Quaternion(0.204402, -0.00661157, -0.00458843, 0.978854)
+bones/46/rotation = Quaternion(0.147099, -0.00100173, -0.00784558, 0.98909)
+bones/47/rotation = Quaternion(0.139283, 0.00310035, -0.00763535, 0.990218)
+bones/48/rotation = Quaternion(0.123217, 0.146371, 0.97657, -0.098507)
+bones/49/rotation = Quaternion(-0.0240914, 0.982086, -0.182419, 0.0406297)
+bones/50/rotation = Quaternion(-0.0366634, 0.67683, -0.728379, 0.100105)
+bones/51/rotation = Quaternion(0.0207906, 0.999216, 0.0262375, 0.0211211)
+bones/52/rotation = Quaternion(-0.078518, 0.0983143, 0.990826, 0.0493191)
+bones/53/rotation = Quaternion(0.0249546, 0.980619, -0.189916, -0.0411839)
+bones/54/rotation = Quaternion(0.0584854, 0.628111, -0.773952, -0.0552606)
+bones/55/rotation = Quaternion(-0.0208614, 0.99851, 0.0454763, -0.0217784)
+
+[node name="LeftHandWeapon" type="BoneAttachment3D" parent="Armature/GeneralSkeleton" index="1"]
+transform = Transform3D(0.160284, 0.187334, -0.969131, -0.234873, -0.946386, -0.221783, -0.95872, 0.263171, -0.107691, 0.299114, 0.973318, 0.0910055)
+bone_name = "LeftHand"
+bone_idx = 13
+
+[node name="LHWeaponOffset" type="Node3D" parent="Armature/GeneralSkeleton/LeftHandWeapon" index="0"]
+transform = Transform3D(-4.47035e-08, -1, -2.98023e-08, 1.86265e-09, -5.96046e-08, 1, -1, 3.72529e-08, 0, 5.96046e-08, 0.0808955, 0.0329161)
+
+[node name="DefaultWeapon" parent="Armature/GeneralSkeleton/LeftHandWeapon/LHWeaponOffset" index="0" instance=ExtResource("2_qvput")]
+transform = Transform3D(1, 0, 0, 0, 1, -5.58794e-09, -7.45058e-09, 3.72529e-09, 1, 0, 0, 0)
+IsLeftHandWeapon = true
+
+[node name="RightHandWeapon" type="BoneAttachment3D" parent="Armature/GeneralSkeleton" index="2"]
+transform = Transform3D(0.119387, -0.262494, 0.95752, 0.156217, -0.947438, -0.279207, 0.980481, 0.182915, -0.0721056, -0.296895, 0.942122, 0.0333307)
+bone_name = "RightHand"
+bone_idx = 32
+
+[node name="RHWeaponOffset" type="Node3D" parent="Armature/GeneralSkeleton/RightHandWeapon" index="0"]
+transform = Transform3D(-4.47035e-08, 1, -7.45058e-08, 9.31323e-10, -1.3411e-07, 1, 1, 6.70552e-08, -2.98023e-08, 0.0102915, 0.091983, 0.0410801)
+
+[node name="DefaultWeapon" parent="Armature/GeneralSkeleton/RightHandWeapon/RHWeaponOffset" index="0" instance=ExtResource("2_qvput")]
+transform = Transform3D(1, -1.49012e-08, 0, -1.49012e-08, 1, 8.3819e-09, 0, -4.65661e-09, 1, 0, 0, 0)
+
+[node name="Rootmotion" type="BoneAttachment3D" parent="Armature/GeneralSkeleton" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000364437, 0.00166051, 0.000240162)
+bone_name = "Root"
+bone_idx = 0
+
+[node name="AnimationPlayer" parent="." index="1"]
+playback_default_blend_time = 0.1
+libraries = {
+"HumanoidBase": SubResource("AnimationLibrary_oh55c")
+}
+script = ExtResource("11_5s7hk")
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
+anim_player = NodePath("../AnimationPlayer")
+root_motion_track = NodePath("%GeneralSkeleton:Root")

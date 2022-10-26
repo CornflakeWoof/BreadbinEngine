@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://8bagjtuuoqpe"]
+
+[ext_resource type="Script" path="res://Scripts/Combat/Weapon_Base.gd" id="1_rr5u8"]
+
+[node name="DefaultWeapon" type="Node3D"]
+script = ExtResource("1_rr5u8")
+Weapon_1H_R1 = ["HumanoidBase/sword_rslash", "HumanoidBase/sword_backslash"]
+Weapon_1H_R2 = ["HumanoidBase/sword_multislash"]
+Weapon_1H_L1 = ["HumanoidBase/sword_backslash"]
+Weapon_1H_L2 = ["HumanoidBase/sword_backslash"]
+Weapon_1H_RunningAttack = "HumanoidBase/sword_backslash"
+Weapon_2H_RunningAttack = "HumanoidBase/sword_backslash"
+Weapon_1H_FallingAttack = "HumanoidBase/sword_backslash"
+Weapon_2H_FallingAttack = "HumanoidBase/sword_backslash"
+Weapon_1H_R1_Critical = "HumanoidBase/HumanoidBase/sword_backslashsword_backslash"
+Weapon_1H_L1_Critical = "HumanoidBase/sword_backslash"
+Weapon_2H_R1_Critical = "HumanoidBase/sword_backslash"
+Weapon_2H_L1_Critical = "HumanoidBase/sword_backslash"
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.996653, 0.0817472, 0, -0.0817472, 0.996653, 0, 0.387465, -0.0310988)
+size = Vector3(0.05, 1.11333, 0.05)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972362, -0.0228994)
+size = Vector3(0.0934885, 0.0918231, 0.458117)
