@@ -1,10 +1,12 @@
 extends Node3D
 
-## CREDIT TO PEMGUIN005!
+## CREDIT TO PEMGUIN005 FOR PRETTY MUCH ALL OF THIS!
+
+@export var PlayerCharacterMesh:NodePath
 
 var camrot_h = 0
 var camrot_v = 0
-@export var cam_v_max = 75 # -75 recommended
+@export var cam_v_max = -75 # -75 recommended
 @export var cam_v_min = -55 # -55 recommended
 @export var joystick_sensitivity = 20
 var h_sensitivity = .01
@@ -51,6 +53,18 @@ func _process(_delta):
 func _physics_process(delta):
 	# JoyPad Controls
 	_joystick_input()
+	
+	var mesh_front = get_node(PlayerCharacterMesh).global_transform.basis.z
+	var auto_rotate_speed =  (PI - mesh_front.angle_to($h.global_transform.basis.z)) * get_parent().horizontal_velocity.length() * rot_speed_multiplier
+	
+	if $control_stay_delay.is_stopped():
+		#FOLLOW CAMERA
+		
+		$h.rotation.y = lerp_angle($h.rotation.y, get_node(PlayerCharacterMesh).global_transform.basis.get_euler().y, delta * auto_rotate_speed)
+		camrot_h = $h.rotation.y
+	else:
+		#MOUSE CAMERA
+		$h.rotation.y = lerp($h.rotation.y, camrot_h, delta * h_acceleration)
 	
 	$h.rotation.y = camrot_h
 	$h/v.rotation.x = clamp(camrot_v,cam_v_min,cam_v_max)

@@ -6,7 +6,6 @@ class_name PlayerActor
 
 ##MOVEMENT
 
-var sprinting : bool = false
 var jump_possible : bool = false
 
 ##COMBAT
@@ -20,7 +19,7 @@ func _ready():
 	create_timer("PostSprintJumpWindowTimer",0.5,true,false)
 	#print_debug(ActorAnimationPlayer.get_animation_list())
 
-func handle_player_input():
+func handle_player_input(timescale:float):
 	var PlayerLeft:String = "P"+str(Player_Number)+"_MoveLeft"
 	var PlayerRight:String = "P"+str(Player_Number)+"_MoveRight"
 	var PlayerUp:String = "P"+str(Player_Number)+"_MoveUp"
@@ -28,16 +27,29 @@ func handle_player_input():
 	
 	var h_rot = $Camroot/h.global_transform.basis.get_euler().y
 	
+	current_speed = 0
 	
-	var input_dir = Input.get_vector(PlayerLeft, PlayerRight, PlayerUp, PlayerDown)
-	direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	direction = direction.rotated(Vector3.UP, h_rot).normalized()
-	if direction:
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
-	else:
-		velocity.x = move_toward(velocity.x, 0, current_speed)
-		velocity.z = move_toward(velocity.z, 0, current_speed)
+	if (Input.is_action_pressed(PlayerUp) ||  Input.is_action_pressed(PlayerDown) ||  Input.is_action_pressed(PlayerLeft) ||  Input.is_action_pressed(PlayerRight)):
+		direction = Vector3(Input.get_action_strength(PlayerLeft) - Input.get_action_strength(PlayerRight),
+					0,
+					Input.get_action_strength(PlayerUp) - Input.get_action_strength(PlayerDown))
+		direction = direction.rotated(Vector3.UP, h_rot).normalized()
+		
+		if sprinting == true:
+			current_speed = sprint_speed
+		else:
+			current_speed = starting_speed
+	
+	## SERIOUSLY THANK YOU SO, SO, SO MUCH PEMGUIN005 I LITERALLY COULD NEVER HAVE DONE THIS
+	#WITHOUT YOU FULL CREDIT TO HIM FOR PRETTY MUCH ALL OF THIS FUNCTION, I JUST TRANSLATED
+	#IT TO GODOT 4
+
+
+	horizontal_velocity = horizontal_velocity.lerp(direction.normalized() * current_speed * movement_multiplier, acceleration * timescale)
+	
+	velocity.z = horizontal_velocity.z + vertical_velocity.z
+	velocity.x = horizontal_velocity.x + vertical_velocity.x
+	velocity.y = vertical_velocity.y
 
 	move_and_slide()
 	
@@ -133,7 +145,7 @@ func setup_attack_animation(input:String="R1",LeftWeapon:bool=false):
 			
 		can_combo = false
 			
-	print_debug(CurrentAttackAnimation)
+	#print_debug(CurrentAttackAnimation)
 		
 	attacking = true
 	
@@ -153,7 +165,7 @@ func handle_attack_inputs():
 		setup_attack_animation("L2",false)
 
 func handle_player_rotation(timescale:float):
-	if abs(velocity.x) > 2 or abs(velocity.z) > 2:
+	if abs(velocity.x) > 1 or abs(velocity.z) > 1:
 		ActorMesh.rotation.y = lerp_angle(ActorMesh.rotation.y, atan2(direction.x, direction.z) - rotation.y, timescale * (rotation_speed*rotation_multiplier))
 
 func affect_sprint(startsprinting:bool=false):
@@ -220,4 +232,4 @@ func _physics_process(delta):
 	handle_actor_gravity(delta)
 	handle_player_rotation(delta)
 	if Player_Number != 0:
-		handle_player_input()
+		handle_player_input(delta)

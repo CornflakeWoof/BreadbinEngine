@@ -20,11 +20,11 @@ func allow_combo():
 func end_combo():
 	call_function_on_owner("stop_attacking",true)
 	
-func change_actor_rotation_multiplier(amount:float=1.0):
+func change_actor_rotation_multiplier(amount:float=1.0,amountmovement:float=1.0):
 	var actor = owner.owner
 	if actor.has_method("change_rotation_multiplier"):
 		#print_debug(str(actor.name)+" has change_rotation_multiplier, running!")
-		actor.call_deferred("change_rotation_multiplier",amount)
+		actor.call_deferred("change_rotation_multiplier",amount,amountmovement)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

@@ -18,6 +18,7 @@ starting_speed = 4
 
 [node name="Camroot" type="Node3D" parent="."]
 script = ExtResource("2_xgfxi")
+PlayerCharacterMesh = NodePath("../BreadbinKnight")
 CameraActorMesh = NodePath("")
 
 [node name="h" type="Node3D" parent="Camroot"]
@@ -25,9 +26,10 @@ CameraActorMesh = NodePath("")
 [node name="v" type="Node3D" parent="Camroot/h"]
 
 [node name="Camera3D" type="Camera3D" parent="Camroot/h/v"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 2.5)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.25, -2.5)
 
 [node name="control_stay_delay" type="Timer" parent="Camroot"]
+one_shot = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89082, 0)
@@ -52,3 +54,21 @@ offset_bottom = 205.0
 script = ExtResource("4_h7cfl")
 VariableName = "Can Combo"
 actualvariable = "can_combo"
+
+[node name="Label3" type="Label" parent="."]
+offset_left = 54.0
+offset_top = 194.0
+offset_right = 319.0
+offset_bottom = 272.0
+script = ExtResource("4_h7cfl")
+VariableName = "Rot Mult"
+actualvariable = "rotation_multiplier"
+
+[node name="Label4" type="Label" parent="."]
+offset_left = 55.0
+offset_top = 282.0
+offset_right = 320.0
+offset_bottom = 360.0
+script = ExtResource("4_h7cfl")
+VariableName = "Move Mult"
+actualvariable = "movement_multiplier"

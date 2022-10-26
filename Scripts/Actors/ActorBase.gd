@@ -66,16 +66,21 @@ var pained : bool = false
 var can_be_hit : bool = true
 var can_combo : bool = true
 var alive : bool = true
+var sprinting : bool = false
 
 ## PHYSICS
 
 var direction : Vector3
+var horizontal_velocity : Vector3
+var vertical_velocity : Vector3
 @export var starting_speed:int = 5
-@onready var current_speed = starting_speed
+@onready var current_speed = 0
+@onready var sprint_speed:int = int(starting_speed*2)
 @export var jump_velocity:int = 4
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@export var rotation_speed:float = 12.0
+@export var rotation_speed:int = 12
+@export var acceleration:int = 5
 var rotation_multiplier : float = 1.0
 var movement_multiplier : float = 1.0
 
@@ -168,7 +173,7 @@ func load_actor_status():
 func affect_pained_state(setto:bool):
 	pained = setto
 	if setto == true:
-		movement_multiplier = 0.2
+		movement_multiplier = 0.05
 	else:
 		movement_multiplier = 1.0
 		
@@ -186,21 +191,25 @@ func stop_attacking():
 	can_combo = true
 	rotation_multiplier = 1.0
 	
-func change_rotation_multiplier(amount:float=1.0):
+func change_rotation_multiplier(amount:float=1.0,movementamount:float=1.0):
 	if rotation_multiplier != amount:
 		var current_rotation_multiplier = rotation_multiplier
 		rotation_multiplier = lerp(current_rotation_multiplier,amount,1)
+	if movement_multiplier != movementamount:
+		var current_movement_multiplier = movement_multiplier
+		movement_multiplier = lerp(movement_multiplier,movementamount,1)
 		#print_debug(str(self.name)+" rotation changed! "+str(rotation_multiplier))
-
-func affect_actorhitareas(setto:bool):
-	for a in ActorHitAreas:
-		a.visible=setto
 
 ### ALL ACTOR MOVEMENT FUNCTIONS
 
 func handle_actor_gravity(timescale:float):
-	if not is_on_floor():
-		velocity.y -= gravity * timescale
+	if not is_on_floor(): 
+		vertical_velocity += Vector3.DOWN * gravity * timescale
+	else: 
+		vertical_velocity = -get_floor_normal() * gravity / 3
+
+func add_actor_forward_force(horzpower:float=3.0):
+	horizontal_velocity = direction*horzpower
 
 func try_actor_jump(additionalheight:int=0,force:bool=false):
 	if (is_on_floor() and force==false) or force == true:
