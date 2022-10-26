@@ -72,3 +72,12 @@ offset_bottom = 360.0
 script = ExtResource("4_h7cfl")
 VariableName = "Move Mult"
 actualvariable = "movement_multiplier"
+
+[node name="Label5" type="Label" parent="."]
+offset_left = 58.0
+offset_top = 399.0
+offset_right = 323.0
+offset_bottom = 477.0
+script = ExtResource("4_h7cfl")
+VariableName = "Sprinting"
+actualvariable = "sprinting"

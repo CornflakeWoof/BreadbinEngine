@@ -68,8 +68,11 @@ func handle_player_animation():
 			NewAnimationName = IdleAnimationName
 			attacking = false
 	else:
-		if abs(velocity.x) || abs(velocity.z) > 0.1:
-			NewAnimationName = "HumanoidBase/walk"
+		if abs(velocity.x) > 1 || abs(velocity.z) > 1:
+			if sprinting == false:
+				NewAnimationName = "HumanoidBase/walk"
+			else:
+				NewAnimationName = "HumanoidBase/run"
 		else:
 			NewAnimationName = IdleAnimationName
 		

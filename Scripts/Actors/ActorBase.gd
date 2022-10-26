@@ -75,7 +75,7 @@ var horizontal_velocity : Vector3
 var vertical_velocity : Vector3
 @export var starting_speed:int = 5
 @onready var current_speed = 0
-@onready var sprint_speed:int = int(starting_speed*2)
+@onready var sprint_speed:int = int(starting_speed*2.4)
 @export var jump_velocity:int = 4
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -190,6 +190,7 @@ func stop_attacking():
 	current_combo = 0
 	can_combo = true
 	rotation_multiplier = 1.0
+	sprinting = false
 	
 func change_rotation_multiplier(amount:float=1.0,movementamount:float=1.0):
 	if rotation_multiplier != amount:
