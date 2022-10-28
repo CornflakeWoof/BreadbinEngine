@@ -16,6 +16,9 @@ Weapon_1H_R1_Critical = "HumanoidBase/HumanoidBase/sword_backslashsword_backslas
 Weapon_1H_L1_Critical = "HumanoidBase/sword_backslash"
 Weapon_2H_R1_Critical = "HumanoidBase/sword_backslash"
 Weapon_2H_L1_Critical = "HumanoidBase/sword_backslash"
+WhooshSoundPaths = []
+HitSoundPaths = []
+BaseDamage = []
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.996653, 0.0817472, 0, -0.0817472, 0.996653, 0, 0.387465, -0.0310988)
@@ -24,3 +27,7 @@ size = Vector3(0.05, 1.11333, 0.05)
 [node name="CSGBox3D2" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0972362, -0.0228994)
 size = Vector3(0.0934885, 0.0918231, 0.458117)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+bus = &"SoundEffects"
+area_mask = 8388609

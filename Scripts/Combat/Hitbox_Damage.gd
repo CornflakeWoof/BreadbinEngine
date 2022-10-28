@@ -8,12 +8,16 @@ class_name Hitbox_Damage
 var PreviousHitboxLevel:int = 0
 var CurrentHitboxDamageMultiplier:float = 1.0
 var PreviousHitboxDamageMultiplier:float = 1.0
-@onready var CurrentHitboxDamage:Array[int] = HitboxDamageValuesBase
+@onready var CurrentHitboxDamage:Array[int] = HitboxDamageValuesBase 
+
+signal hitactor
+signal hitwall
 
 var Hitbox_Team = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	setup_initial_values()
 	pass # Replace with function body.
 
 func setup_initial_values():
@@ -25,6 +29,17 @@ func setup_initial_values():
 	SetCurrentHitboxDamage()
 	self.connect("visibility_changed",valuesonvisible)
 	self.visible = false
+	
+	if "BaseDamagePhys" in get_parent()
+		HitboxDamageValuesBase = []
+	
+	## CREATE AUTOMATIC TURN OFF TIMER
+	
+	var turnofftimer = Timer.new()
+	self.add_child(turnofftimer)
+	turnofftimer.name = "DamageHitboxTurnOffTimer"
+	turnofftimer.one_shot = true
+	turnofftimer.autostart = false
 
 func SetCurrentHitboxDamage():
 	CurrentHitboxDamage = HitboxDamageValuesBase

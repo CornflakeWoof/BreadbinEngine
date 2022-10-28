@@ -61,33 +61,53 @@ func handle_player_animation():
 	if NewAnimationName == "" or ActorAnimationPlayerNode.has_animation(str(NewAnimationName)) == false:
 		NewAnimationName = IdleAnimationName
 	
-	if attacking:
-		if ActorAnimationPlayerNode.has_animation(CurrentAttackAnimation):
-			NewAnimationName = CurrentAttackAnimation
-		else:
-			NewAnimationName = IdleAnimationName
-			attacking = false
-	else:
-		if abs(velocity.x) > 1 || abs(velocity.z) > 1:
-			if sprinting == false:
-				NewAnimationName = "HumanoidBase/walk"
+	match ActorState:
+		"rolling":
+			if ActorAnimationPlayerNode.has_animation(RollAnimationName):
+				NewAnimationName = RollAnimationName
 			else:
-				NewAnimationName = "HumanoidBase/run"
-		else:
-			NewAnimationName = IdleAnimationName
+				handle_actor_state()
+		"attacking":
+			if ActorAnimationPlayerNode.has_animation(CurrentAttackAnimation):
+				NewAnimationName = CurrentAttackAnimation
+			else:
+				NewAnimationName = IdleAnimationName
+				handle_actor_state()
+		_:
+			if abs(velocity.x) > 1 || abs(velocity.z) > 1:
+				if sprinting == false:
+					NewAnimationName = "HumanoidBase/walk"
+				else:
+					NewAnimationName = "HumanoidBase/run"
+			else:
+				NewAnimationName = IdleAnimationName
 		
 	if NewAnimationName != CurrentAnimationName:
-		ActorAnimationPlayerNode.play(NewAnimationName)
-		CurrentAnimationName = NewAnimationName
+		call_deferred("play_actormesh_animation",NewAnimationName)
+
+func play_actormesh_animation(animationtoplay:String):
+	ActorMesh.get_node("AnimationPlayer").play(animationtoplay)
+	CurrentAnimationName = animationtoplay
 
 func setup_attack_animation(input:String="R1",LeftWeapon:bool=false):
 
 	var NextAttackAnimation : String = ""
 	var inputstring : String = input
+	var previousinput : String = ""
 	var twohandstring: String = "1H"
 	var WeaponToQuery = ActorMesh.Current_Weapon_R
 	var FinalAnimationString : String = ""
 	var SpecialAttackQueued : bool = false
+	
+	#CHECK IF WE'VE ALREADY GOT AN ATTACK QUEUED
+	#AND END THE FUNCTION IF SO TO STOP US CONFUSING
+	#THE SYSTEM
+	
+	if previousinput == inputstring:
+		if attack_queued == true:
+			return
+	else:
+		previousinput = inputstring
 	
 	#IF WE TRY AND ATTACK WHILE WE CAN'T COMBO, QUEUE AN ATTACK TO DO WHEN WE CAN
 	if can_combo==false:
@@ -121,13 +141,13 @@ func setup_attack_animation(input:String="R1",LeftWeapon:bool=false):
 	else:
 		FinalAnimationString = "Weapon_"+twohandstring+"_"+inputstring
 	
+	print_debug(FinalAnimationString)
 	#IF WE DON'T HAVE A SPECIAL ATTACK QUEUED, ASK OUR QUERIED WEAPON FOR THE
 	#NAME OF THE ANIMATION AT WHATEVER THE CURRENT COMBO VALUE'S PLACE IS IN
 	#THE ARRAY. 
 	if SpecialAttackQueued == false:
 		var CurrentQueryArraySize = get_node(WeaponToQuery.get_path()).get(FinalAnimationString).size()
 		#print_debug("Size of "+str(FinalAnimationString)+": "+str(CurrentQueryArraySize))
-		pass
 		if current_combo > CurrentQueryArraySize-1:
 			#print_debug(str(FinalAnimationString)+str(current_combo)+" not found, defaulting to 0")		
 			current_combo = 0
@@ -139,32 +159,33 @@ func setup_attack_animation(input:String="R1",LeftWeapon:bool=false):
 			NextAttackAnimation = IdleAnimationName
 		current_combo = 0
 	
-
+	handle_actor_state("attacking")
 	current_combo += 1
 	if attack_queued == true:
 		QueuedAttackAnimation = NextAttackAnimation
 	else:
-		CurrentAttackAnimation = NextAttackAnimation
-			
+		CurrentAttackAnimation = NextAttackAnimation			
 		can_combo = false
 			
 	#print_debug(CurrentAttackAnimation)
-		
-	attacking = true
 	
 func handle_attack_inputs():
 	var R1 : String = "P"+str(Player_Number)+"_R1"
 	var R2 : String = "P"+str(Player_Number)+"_R2"
 	var L1 : String = "P"+str(Player_Number)+"_L1"
 	var L2 : String = "P"+str(Player_Number)+"_L2"
+	var Roll : String = "P"+str(Player_Number)+"_Roll"
 	
+	if Input.is_action_just_pressed(Roll):
+		roll_queued = true
+		handle_actor_state("rolling")
 	if Input.is_action_just_pressed(R1):
 		setup_attack_animation("R1",false)
-	elif Input.is_action_just_pressed(R2):
+	if Input.is_action_just_pressed(R2):
 		setup_attack_animation("R2",false)
-	elif Input.is_action_just_pressed(L1):
+	if Input.is_action_just_pressed(L1):
 		setup_attack_animation("L1",false)
-	elif Input.is_action_just_pressed(L2):
+	if Input.is_action_just_pressed(L2):
 		setup_attack_animation("L2",false)
 
 func handle_player_rotation(timescale:float):
@@ -184,11 +205,11 @@ func affect_sprint(startsprinting:bool=false):
 func handle_running_or_jumping():
 	# Handle Jump.
 	if Input.is_action_just_pressed("P"+str(Player_Number)+"_Jump"):
-		if jump_possible == true and velocity != Vector3.ZERO and attacking == false:
+		if jump_possible == true and velocity != Vector3.ZERO and ActorState=="idle":
 			try_actor_jump()
 			jump_possible = false
 		else:
-			if attacking == false:
+			if ActorState=="idle":
 				get_node("StartSprintingTimer").start()
 		
 	if Input.is_action_just_released("P"+str(Player_Number)+"_Jump"):
@@ -197,9 +218,6 @@ func handle_running_or_jumping():
 			jump_possible = true
 			get_node("PostSprintJumpWindowTimer").start()
 			call_deferred("affect_sprint")
-
-func set_position_rm():
-	pass
 			
 ## COMBAT FUNCTIONS
 
@@ -225,14 +243,14 @@ func _PostSprintJumpWindowTimer_timeout():
 
 
 func _process(_delta):
-	handle_player_animation()
-	handle_running_or_jumping()
-	handle_attack_inputs()
+	call_deferred("handle_player_animation")
+	if alive == true:
+		handle_running_or_jumping()
+		handle_attack_inputs()
 
 func _physics_process(delta):
 	
-	set_position_rm()
 	handle_actor_gravity(delta)
 	handle_player_rotation(delta)
-	if Player_Number != 0:
+	if Player_Number != 0 and alive==true:
 		handle_player_input(delta)

@@ -22,7 +22,6 @@ var PlayerCamDown:String = "P"+str(Camera_Player_Number)+"_CamDown"
 var PlayerCamLeft:String = "P"+str(Camera_Player_Number)+"_CamLeft"
 var PlayerCamRight:String = "P"+str(Camera_Player_Number)+"_CamRight"
 
-@export var CameraActorMesh:NodePath
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

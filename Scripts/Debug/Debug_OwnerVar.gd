@@ -5,6 +5,8 @@ extends Label
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if get_node("/root/GlobalSystemSettings").DebugMode == false:
+		queue_free()
 	pass # Replace with function body.
 
 

@@ -19,6 +19,13 @@ func allow_combo():
 
 func end_combo():
 	call_function_on_owner("stop_attacking",true)
+
+func stop_rolling():
+	call_function_on_owner("stop_rolling",true)
+	
+func push_actor_forward(amount:float=3.0):
+	if owner.owner.has_method("add_actor_forward_force"):
+		owner.owner.add_actor_forward_force(amount)
 	
 func change_actor_rotation_multiplier(amount:float=1.0,amountmovement:float=1.0):
 	var actor = owner.owner

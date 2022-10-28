@@ -8,7 +8,7 @@ class_name ActorBase
 
 @export var ActorMeshPath:NodePath
 @onready var ActorMesh = get_node(ActorMeshPath)
-@onready var ActorAnimationPlayerNode :AnimationPlayer = ActorMesh.get_node("AnimationPlayer")
+@onready var ActorAnimationPlayerNode = ActorMesh.get_node("AnimationPlayer")
 
 var ActorHitAreas:Array[Area3D]
 var HitByArray:Array[String]
@@ -28,15 +28,25 @@ var Current_Stamina = 100
 @export var Natural_Poise:int = 100
 var Additional_Poise:int = 0
 
+## RESISTANCES
+
 ## ANIMATIONS
 
 #IDLE ANIMATION IS THE FALLBACK, SO WE MAKE SURE
 #WE HAVE IT FILLED OUT HERE SO ALL CHILD CLASSES
 #CAN REFER BACK TO IT
 @export var IdleAnimationName = "HumanoidBase/idle1"
+#DEFAULT FALLBACK DODGE/ROLL MOVE
+@export var RollAnimationName = "HumanoidBase/roll"
+#FAILSAFE TO CANCEL ROLL AND RETURN TO IDLE
+var RollResetTime : float = 1.5
 var CurrentAnimationName:String = "none"
 var CurrentAttackAnimation :String = ""
 var QueuedAttackAnimation : String = ""
+
+#"idle" FOR MOVEMENT, "attacking" FOR ATTACKS, "rolling" FOR ROLLS
+var ActorState : String = "idle"
+const ValidActorStates : Array[String] = ["idle","rolling","attacking"]
 
 
 ## RESPAWN AND SAVE
@@ -54,14 +64,14 @@ var PingLeftWeapon : bool = false
 #TWO HANDING STATES - 0-1H,1-2HRightWeapon,2-2HLeftWeapon
 var Two_Handing_State : int = 0
 
-#CURRENT COMBO LENGTH
+#DETERMINE IF NEXT STATE SHOULD BE ROLLING OR
+#ATTACKING - ROLL SHOULD ALWAYS TAKE PRIORITY
+var roll_queued : bool = false
 var attack_queued : bool = false
 var current_combo : int = 0
 
 var locked_on : bool = false
 var jumping : bool = false
-var taking_damage : bool = false
-var attacking : bool = false
 var pained : bool = false
 var can_be_hit : bool = true
 var can_combo : bool = true
@@ -113,7 +123,11 @@ func setup_initial_values():
 	#$GlobalSystemSettings.connect("save_all_actors",saveableactor)
 	Current_HP = (Max_HP if Custom_Starting_HP < 1 else Custom_Starting_HP)
 	Current_Stamina = (Max_HP if Custom_Starting_Stamina < 1 else Custom_Starting_Stamina)
-	create_timer("RootMotionUpdateTimer",0.5,false,true)
+	
+	create_timer("RollResetTimer",RollResetTime,true,false)
+	
+	if ActorAnimationPlayerNode.playback_default_blend_time == 0:
+		ActorAnimationPlayerNode.playback_default_blend_time = 0.1
 
 func create_timer(timername:String="NewTimer",time:float=2.0,oneshot:bool=false,auto_start:bool=false):
 	var timercallable = Callable(self,"_"+str(timername)+"_timeout")
@@ -185,12 +199,60 @@ func allow_combo():
 		CurrentAttackAnimation = QueuedAttackAnimation
 		
 func stop_attacking():
-	attacking = false
-	attack_queued = false
+	allow_combo()
 	current_combo = 0
-	can_combo = true
-	rotation_multiplier = 1.0
+	change_rotation_multiplier()
 	sprinting = false
+	handle_actor_state()
+
+func stop_rolling():
+	if roll_queued == true:
+		roll_queued = false
+	else:
+		if attack_queued == false:
+			stop_attacking()
+		else:
+			change_rotation_multiplier()
+			sprinting = false
+			allow_combo()
+			current_combo = 0
+			handle_actor_state()
+	
+func handle_actor_state(forcestate:String=""):
+	if ValidActorStates.has(forcestate):
+		ActorState = forcestate
+	else:
+		match ActorState:
+			"rolling":
+				if attack_queued == false:
+					ActorState = "idle"
+				else:
+					ActorState = "attacking"
+			"attacking":
+				if roll_queued == true:
+					ActorState = "rolling"
+				else:
+					ActorState = "idle"
+			_:
+				if attack_queued == true:
+					ActorState = "attacking"
+				else:
+					ActorState = "rolling"
+	
+func kill_or_revive_actor(revive:bool=false):
+	var multiplier_float:float
+	
+	multiplier_float = 1.0 if revive == true else 0.0
+	
+	alive == revive
+	movement_multiplier = multiplier_float
+	rotation_multiplier = multiplier_float
+	sprinting = revive
+	can_combo = revive
+
+## ANIMATION FUNCTIONS
+
+
 	
 func change_rotation_multiplier(amount:float=1.0,movementamount:float=1.0):
 	if rotation_multiplier != amount:
@@ -218,10 +280,9 @@ func try_actor_jump(additionalheight:int=0,force:bool=false):
 
 ##TIMEOUTS
 
-func _RootMotionUpdateTimer_timeout():
-	var RootbonePosition:Vector3 = ActorMesh.Skeleton.get_bone_pose_position(0)
-	var LocalRootmotion:Vector3 = ActorMesh.global_transform.basis.z
-	rootmotion = LocalRootmotion.z * RootbonePosition.z
+func RollResetTimer_timeout():
+	if ActorState == "rolling" and roll_queued == false and attack_queued == false:
+		handle_actor_state("idle")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

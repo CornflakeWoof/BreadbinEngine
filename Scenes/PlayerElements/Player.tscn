@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Actors/PlayerBase.gd" id="1_mrn12"]
 [ext_resource type="Script" path="res://Scripts/Actors/PlayerCamera.gd" id="2_xgfxi"]
-[ext_resource type="PackedScene" uid="uid://b4uotbjdaf6as" path="res://Meshes/Test/breadbin_knight.tscn" id="3_w27hl"]
+[ext_resource type="PackedScene" uid="uid://coc6v2aa1a8x4" path="res://Meshes/Test/fem_knight.tscn" id="4_1kdii"]
 [ext_resource type="Script" path="res://Scripts/Debug/Debug_OwnerVar.gd" id="4_h7cfl"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_gauop"]
@@ -13,13 +13,12 @@ radius = 0.279917
 script = ExtResource("1_mrn12")
 Player_Number = 1
 Actor_Team = 1
-ActorMeshPath = NodePath("BreadbinKnight")
+ActorMeshPath = NodePath("FemKnight")
 starting_speed = 4
 
 [node name="Camroot" type="Node3D" parent="."]
 script = ExtResource("2_xgfxi")
-PlayerCharacterMesh = NodePath("../BreadbinKnight")
-CameraActorMesh = NodePath("")
+PlayerCharacterMesh = NodePath("../FemKnight")
 
 [node name="h" type="Node3D" parent="Camroot"]
 
@@ -34,8 +33,6 @@ one_shot = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89082, 0)
 shape = SubResource("CylinderShape3D_gauop")
-
-[node name="BreadbinKnight" parent="." instance=ExtResource("3_w27hl")]
 
 [node name="Label" type="Label" parent="."]
 offset_left = 62.0
@@ -81,3 +78,23 @@ offset_bottom = 477.0
 script = ExtResource("4_h7cfl")
 VariableName = "Sprinting"
 actualvariable = "sprinting"
+
+[node name="Label6" type="Label" parent="."]
+offset_left = 61.0
+offset_top = 492.0
+offset_right = 326.0
+offset_bottom = 570.0
+script = ExtResource("4_h7cfl")
+VariableName = "Rolling"
+actualvariable = "rolling"
+
+[node name="Label7" type="Label" parent="."]
+offset_left = 62.0
+offset_top = 607.0
+offset_right = 327.0
+offset_bottom = 685.0
+script = ExtResource("4_h7cfl")
+VariableName = "Current Animation Name"
+actualvariable = "CurrentAnimationName"
+
+[node name="FemKnight" parent="." instance=ExtResource("4_1kdii")]
