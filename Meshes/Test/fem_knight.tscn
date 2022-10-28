@@ -89,7 +89,7 @@ bones/63/rotation = Quaternion(0.0577453, 0.628565, -0.77367, -0.0548323)
 bones/64/rotation = Quaternion(-0.0214793, 0.998464, 0.0467849, -0.0204645)
 
 [node name="WeaponLeft" type="BoneAttachment3D" parent="Armature/GeneralSkeleton" index="1"]
-transform = Transform3D(0.154304, 0.169738, -0.973334, -0.23718, -0.949963, -0.203263, -0.959133, 0.26222, -0.106325, 0.263873, 0.95271, 0.0751531)
+transform = Transform3D(0.154304, 0.169738, -0.973334, -0.237181, -0.949963, -0.203263, -0.959133, 0.262221, -0.106325, 0.263873, 0.95271, 0.0751534)
 bone_name = "LeftHand"
 bone_idx = 11
 
@@ -99,7 +99,7 @@ transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 
 [node name="DefaultWeapon" parent="Armature/GeneralSkeleton/WeaponLeft/WeaponOffsetL" index="0" instance=ExtResource("3_qcpka")]
 
 [node name="WeaponRight" type="BoneAttachment3D" parent="Armature/GeneralSkeleton" index="2"]
-transform = Transform3D(0.120027, -0.248459, 0.961177, 0.138476, -0.954522, -0.264031, 0.983066, 0.164791, -0.0801623, -0.267885, 0.923973, 0.00929488)
+transform = Transform3D(0.120028, -0.248459, 0.961177, 0.138477, -0.954522, -0.264031, 0.983066, 0.164792, -0.0801634, -0.267885, 0.923973, 0.00929522)
 bone_name = "RightHand"
 bone_idx = 35
 

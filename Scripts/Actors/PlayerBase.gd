@@ -65,14 +65,9 @@ func handle_player_animation():
 		"rolling":
 			if ActorAnimationPlayerNode.has_animation(RollAnimationName):
 				NewAnimationName = RollAnimationName
-			else:
-				handle_actor_state()
 		"attacking":
 			if ActorAnimationPlayerNode.has_animation(CurrentAttackAnimation):
 				NewAnimationName = CurrentAttackAnimation
-			else:
-				NewAnimationName = IdleAnimationName
-				handle_actor_state()
 		_:
 			if abs(velocity.x) > 1 || abs(velocity.z) > 1:
 				if sprinting == false:
@@ -246,7 +241,8 @@ func _process(_delta):
 	call_deferred("handle_player_animation")
 	if alive == true:
 		handle_running_or_jumping()
-		handle_attack_inputs()
+		if ActorState != "rolling":
+			handle_attack_inputs()
 
 func _physics_process(delta):
 	

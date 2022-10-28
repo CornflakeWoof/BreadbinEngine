@@ -43,6 +43,15 @@ script = ExtResource("4_h7cfl")
 VariableName = "Attack Queued"
 actualvariable = "attack_queued"
 
+[node name="Label8" type="Label" parent="."]
+offset_left = 62.0
+offset_top = 137.0
+offset_right = 327.0
+offset_bottom = 215.0
+script = ExtResource("4_h7cfl")
+VariableName = "Roll Queued"
+actualvariable = "roll_queued"
+
 [node name="Label2" type="Label" parent="."]
 offset_left = 57.0
 offset_top = 127.0
@@ -85,8 +94,8 @@ offset_top = 492.0
 offset_right = 326.0
 offset_bottom = 570.0
 script = ExtResource("4_h7cfl")
-VariableName = "Rolling"
-actualvariable = "rolling"
+VariableName = "Actor State"
+actualvariable = "ActorState"
 
 [node name="Label7" type="Label" parent="."]
 offset_left = 62.0

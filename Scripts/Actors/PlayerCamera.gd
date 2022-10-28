@@ -33,7 +33,7 @@ func _input(event):
 	if event is InputEventMouseMotion:
 		$control_stay_delay.start()
 		camrot_h += -event.relative.x * h_sensitivity
-		camrot_v += -event.relative.y * v_sensitivity
+		camrot_v += event.relative.y * v_sensitivity
 		
 		
 func _joystick_input():
@@ -65,5 +65,4 @@ func _physics_process(delta):
 		#MOUSE CAMERA
 		$h.rotation.y = lerp($h.rotation.y, camrot_h, delta * h_acceleration)
 	
-	$h.rotation.y = camrot_h
-	$h/v.rotation.x = clamp(camrot_v,cam_v_min,cam_v_max)
+	$h/v.rotation.x = lerp($h/v.rotation.x, camrot_v, delta * v_acceleration)

@@ -197,8 +197,11 @@ func allow_combo():
 		if QueuedAttackAnimation =="":
 			QueuedAttackAnimation = CurrentAttackAnimation
 		CurrentAttackAnimation = QueuedAttackAnimation
+		attack_queued = false
 		
 func stop_attacking():
+	if attack_queued == true:
+		attack_queued = false
 	allow_combo()
 	current_combo = 0
 	change_rotation_multiplier()
@@ -208,15 +211,9 @@ func stop_attacking():
 func stop_rolling():
 	if roll_queued == true:
 		roll_queued = false
-	else:
-		if attack_queued == false:
-			stop_attacking()
-		else:
-			change_rotation_multiplier()
-			sprinting = false
-			allow_combo()
-			current_combo = 0
-			handle_actor_state()
+	handle_actor_state()
+	rotation_multiplier = 1.0
+	movement_multiplier = 1.0
 	
 func handle_actor_state(forcestate:String=""):
 	if ValidActorStates.has(forcestate):
@@ -234,10 +231,12 @@ func handle_actor_state(forcestate:String=""):
 				else:
 					ActorState = "idle"
 			_:
-				if attack_queued == true:
+				if roll_queued == true:
+					ActorState = "rolling"
+				elif attack_queued == true:
 					ActorState = "attacking"
 				else:
-					ActorState = "rolling"
+					ActorState = "idle"
 	
 func kill_or_revive_actor(revive:bool=false):
 	var multiplier_float:float
