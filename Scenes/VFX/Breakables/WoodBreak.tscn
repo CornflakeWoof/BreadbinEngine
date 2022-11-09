@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://ow2jpio5gll7"]
+
+[ext_resource type="Script" path="res://Scripts/VFX/VFXBase.gd" id="1_oic7x"]
+[ext_resource type="Texture2D" uid="uid://confc36686xi0" path="res://Textures/VFX/WoodBoardChip.png" id="2_ni5f1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ehdus"]
+transparency = 2
+alpha_scissor_threshold = 0.7
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("2_ni5f1")
+billboard_mode = 1
+
+[sub_resource type="Curve" id="Curve_ac4ey"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.788889, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_imebq"]
+curve = SubResource("Curve_ac4ey")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_33gbb"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+particle_flag_align_y = true
+direction = Vector3(0, 2, 0)
+spread = 10.0
+initial_velocity_min = 6.0
+initial_velocity_max = 8.0
+angular_velocity_min = -40.0
+angular_velocity_max = 40.0
+angle_min = -90.0
+angle_max = -90.0
+scale_min = 0.3
+scale_max = 0.4
+scale_curve = SubResource("CurveTexture_imebq")
+
+[sub_resource type="QuadMesh" id="QuadMesh_s506r"]
+
+[node name="WoodBreak" type="Node3D"]
+script = ExtResource("1_oic7x")
+VFXTimeout = 1.1
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_ehdus")
+gi_mode = 0
+emitting = false
+amount = 12
+one_shot = true
+explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_33gbb")
+draw_pass_1 = SubResource("QuadMesh_s506r")

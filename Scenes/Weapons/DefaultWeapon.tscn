@@ -1,24 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://8bagjtuuoqpe"]
+[gd_scene load_steps=4 format=3 uid="uid://8bagjtuuoqpe"]
 
 [ext_resource type="Script" path="res://Scripts/Combat/Weapon_Base.gd" id="1_rr5u8"]
+[ext_resource type="Script" path="res://Scripts/Combat/Hitbox_Damage.gd" id="2_3wg3v"]
 
-[node name="DefaultWeapon" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_jc4p0"]
+size = Vector3(0.0757193, 0.803862, 0.0924812)
+
+[node name="DefaultWeapon" type="Node3D" node_paths=PackedStringArray("WeaponAudioPlayer", "Hitbox0")]
 script = ExtResource("1_rr5u8")
-Weapon_1H_R1 = ["HumanoidBase/sword_rslash", "HumanoidBase/sword_backslash"]
-Weapon_1H_R2 = ["HumanoidBase/sword_multislash"]
-Weapon_1H_L1 = ["HumanoidBase/sword_backslash"]
-Weapon_1H_L2 = ["HumanoidBase/sword_backslash"]
-Weapon_1H_RunningAttack = "HumanoidBase/sword_backslash"
-Weapon_2H_RunningAttack = "HumanoidBase/sword_backslash"
-Weapon_1H_FallingAttack = "HumanoidBase/sword_backslash"
-Weapon_2H_FallingAttack = "HumanoidBase/sword_backslash"
-Weapon_1H_R1_Critical = "HumanoidBase/HumanoidBase/sword_backslashsword_backslash"
-Weapon_1H_L1_Critical = "HumanoidBase/sword_backslash"
-Weapon_2H_R1_Critical = "HumanoidBase/sword_backslash"
-Weapon_2H_L1_Critical = "HumanoidBase/sword_backslash"
+Weapon_1H_R1 = [100, 101, 102]
+WeaponAudioPlayer = NodePath("AudioStreamPlayer3D")
 WhooshSoundPaths = []
 HitSoundPaths = []
 BaseDamage = []
+Hitbox0 = NodePath("Hitbox_Damage")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.996653, 0.0817472, 0, -0.0817472, 0.996653, 0, 0.387465, -0.0310988)
@@ -31,3 +26,14 @@ size = Vector3(0.0934885, 0.0918231, 0.458117)
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 bus = &"SoundEffects"
 area_mask = 8388609
+
+[node name="Hitbox_Damage" type="Area3D" parent="."]
+visible = false
+script = ExtResource("2_3wg3v")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox_Damage"]
+transform = Transform3D(1, 0, 0, 0, 0.99753, 0.070244, 0, -0.070244, 0.99753, 0, 0.54129, -0.0443287)
+shape = SubResource("BoxShape3D_jc4p0")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Hitbox_Damage"]
+transform = Transform3D(0.3, 0, 0, 0, 0.35, 0, 0, 0, 0.4, 0, 0.573524, -0.0162571)

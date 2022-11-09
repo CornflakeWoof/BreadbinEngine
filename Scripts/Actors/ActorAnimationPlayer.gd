@@ -3,6 +3,11 @@ class_name ActorAnimationPlayer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if "Player_Number" in owner:
+		if owner.Player_Number != 0:
+			self.method_call_mode = AnimationPlayer.ANIMATION_METHOD_CALL_IMMEDIATE
+		else:
+			self.method_call_mode = AnimationPlayer.ANIMATION_METHOD_CALL_DEFERRED
 	pass # Replace with function body.
 
 func call_function_on_owner(funcname:String="",ownersowner:bool=true):
@@ -22,6 +27,10 @@ func end_combo():
 
 func stop_rolling():
 	call_function_on_owner("stop_rolling",true)
+	
+func activate_weapon_hitbox(time:float=0.4,WhichOne:int=0):
+	if owner.owner.has_method("ActivateWeaponHitbox"):
+		owner.owner.ActivateWeaponHitbox(time,WhichOne)
 	
 func push_actor_forward(amount:float=3.0):
 	if owner.owner.has_method("add_actor_forward_force"):

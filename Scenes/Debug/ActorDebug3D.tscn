@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://burq6rcgw0wdv"]
+
+[node name="ActorDebug3D" type="Node3D"]

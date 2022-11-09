@@ -1,14 +1,14 @@
 extends Area3D
 class_name Hitbox_Damage
 
-##ARRAY IS [PHYSDMG,FIRE,LIGHTNING,MAGIC,HOLY,DARK]
-@export var HitboxDamageValuesBase:Array[int] =[25,0,0,0,0,0]
-@export var MultiplierPerLevel:float = 1.1
+
+@export var MultiplierPerLevel:float = 0.1
 @export var HitboxLevel:int = 0
 var PreviousHitboxLevel:int = 0
-var CurrentHitboxDamageMultiplier:float = 1.0
-var PreviousHitboxDamageMultiplier:float = 1.0
-@onready var CurrentHitboxDamage:Array[int] = HitboxDamageValuesBase 
+var HitboxDamageMultiplier = 1.0
+var TotalDamageMultiplier = 1.0
+
+var MyWeapon = self
 
 signal hitactor
 signal hitwall
@@ -16,47 +16,34 @@ signal hitwall
 var Hitbox_Team = 0
 
 # Called when the node enters the scene tree for the first time.
+
+func _enter_tree():
+	self.visible = false
+	self.monitoring =false
+	self.monitorable = false
+
 func _ready():
 	setup_initial_values()
 	pass # Replace with function body.
 
 func setup_initial_values():
-	var valuesonvisible = Callable(self,"update_values_on_visible")
-	self.set_collision_layer_value(0,false)
-	self.set_collision_mask_value(0,false)
-	self.set_collision_layer_value(9,true)
-	self.set_collision_mask_value(10,true)
-	SetCurrentHitboxDamage()
-	self.connect("visibility_changed",valuesonvisible)
-	self.visible = false
+	#FORCE HITBOX'S MASK TO CORRECT VALUES - LOOKING FOR LAYER 10 (ACTORHITBOXES) FROM LAYER 9
+	self.set_collision_layer_value(1,false)
+	self.set_collision_mask_value(1,false)
+	self.set_collision_layer_value(10,true)
+	self.set_collision_mask_value(11,true)
 	
-	if "BaseDamagePhys" in get_parent()
-		HitboxDamageValuesBase = []
+	#if get_node("/root/GlobalSystemSettings").DebugMode == true:
+		#dmghitboxdebug = load()
 	
-	## CREATE AUTOMATIC TURN OFF TIMER
+	if "BaseDamage" in owner:
+		MyWeapon = owner
+		print_debug(str(self.name)+" set MyWeapon to "+str(owner.name))
 	
-	var turnofftimer = Timer.new()
-	self.add_child(turnofftimer)
-	turnofftimer.name = "DamageHitboxTurnOffTimer"
-	turnofftimer.one_shot = true
-	turnofftimer.autostart = false
-
-func SetCurrentHitboxDamage():
-	CurrentHitboxDamage = HitboxDamageValuesBase
-	for x in HitboxDamageValuesBase:
-		if is_instance_valid(CurrentHitboxDamage[x]):
-			if CurrentHitboxDamage[x] != 0:
-				CurrentHitboxDamage[x] = ((int((HitboxDamageValuesBase[x]*MultiplierPerLevel)*HitboxLevel))*CurrentHitboxDamageMultiplier)
-		
-func update_values_on_visible():
-	self.monitoring = visible
-	self.monitorable = visible
-	if PreviousHitboxDamageMultiplier != CurrentHitboxDamageMultiplier or PreviousHitboxLevel != HitboxLevel:
-		PreviousHitboxDamageMultiplier = CurrentHitboxDamageMultiplier
-		PreviousHitboxLevel = HitboxLevel
-		SetCurrentHitboxDamage()
-
-
+	if "Actor_Team" in owner.owner.owner:
+		Hitbox_Team = owner.owner.owner.Actor_Team
+	elif "Actor_Team" in owner.owner:
+		Hitbox_Team = owner.owner.Actor_Team
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

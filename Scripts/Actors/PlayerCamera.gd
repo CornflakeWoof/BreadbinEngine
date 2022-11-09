@@ -4,8 +4,8 @@ extends Node3D
 
 @export var PlayerCharacterMesh:NodePath
 
-var camrot_h = 0
-var camrot_v = 0
+var camrot_h :int = 0
+var camrot_v :int = 0
 @export var cam_v_max = -75 # -75 recommended
 @export var cam_v_min = -55 # -55 recommended
 @export var joystick_sensitivity = 20
@@ -59,10 +59,11 @@ func _physics_process(delta):
 	if $control_stay_delay.is_stopped():
 		#FOLLOW CAMERA
 		
-		$h.rotation.y = lerp_angle($h.rotation.y, get_node(PlayerCharacterMesh).global_transform.basis.get_euler().y, delta * auto_rotate_speed)
+		$h.rotation.y = lerp($h.rotation.y, get_node(PlayerCharacterMesh).global_transform.basis.get_euler().y, delta * auto_rotate_speed)
 		camrot_h = $h.rotation.y
 	else:
+		pass
 		#MOUSE CAMERA
-		$h.rotation.y = lerp($h.rotation.y, camrot_h, delta * h_acceleration)
+		#$h.rotation.y = lerp($h.rotation.y, camrot_h, delta * h_acceleration)
 	
-	$h/v.rotation.x = lerp($h/v.rotation.x, camrot_v, delta * v_acceleration)
+	#$h/v.rotation.x = lerp($h/v.rotation.x, camrot_v, delta * v_acceleration)

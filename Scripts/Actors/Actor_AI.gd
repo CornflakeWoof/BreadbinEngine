@@ -1,9 +1,13 @@
 extends ActorBase
+class_name AIActor
 
+## AI SPECIFIC STATS:
+@export_enum("Wildlife","Private","Corporal","Sergeant","Lieutenant","Captain","Colonel") var NPC_Tier : int
 
 ## KEY NODES
 
 @export var VisionArea:Area3D
+var TargetNode = self
 
 ## AI PREFERENCES
 
@@ -16,11 +20,11 @@ var RealAttackChanceHeavy : float = 0.2
 
 ## ATTACK NAME ARRAYS
 
-@export var LightAttackNames:Array[String]
+@export var LightAttackIDs:Array[int]
 var LightAttackNumber:int = 0
-@export var MidAttackNames:Array[String]
+@export var MidAttackIDs:Array[int]
 var MidAttackNumber:int = 0
-@export var HeavyAttackNames:Array[String]
+@export var HeavyAttackIDs:Array[String]
 var HeavyAttackNumber:int = 0
 
 func _ready():
@@ -29,12 +33,13 @@ func _ready():
 func InitializeAIActor():
 	UpdateAttackNumbers()
 	CalculateAttackChances()
+	process_priority = (50+NPC_Tier)
 
 # ATTACK ARRAY FUNCTIONS
 func UpdateAttackNumbers():
-	LightAttackNumber = LightAttackNames.size()
-	MidAttackNumber = MidAttackNames.size()
-	HeavyAttackNumber = HeavyAttackNames.size()
+	LightAttackNumber = LightAttackIDs.size()
+	MidAttackNumber = MidAttackIDs.size()
+	HeavyAttackNumber = HeavyAttackIDs.size()
 
 func CalculateAttackChances():
 	var FinalAttackSum :int
@@ -62,3 +67,6 @@ func ChooseNextAttackTier():
 	
 	AttackArrayString = str(AttackArrayPrefix)+"AttackNames"
 	return AttackArrayString
+	
+func _custom_physics_process(delta):
+	pass

@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bwrqeyqhmxpy8"]
+[gd_scene load_steps=7 format=3 uid="uid://bwrqeyqhmxpy8"]
 
 [ext_resource type="PackedScene" uid="uid://bypm1gauq34qr" path="res://Scenes/LevelElements/Breakables/TestBox.tscn" id="2_aqj6d"]
 [ext_resource type="PackedScene" uid="uid://b7hdb844rxjwt" path="res://Scenes/PlayerElements/Player.tscn" id="2_ogag1"]
+[ext_resource type="PackedScene" uid="uid://o850r88qgrdg" path="res://Scenes/Enemies/TestKnightEnemy.tscn" id="3_p6so2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2xc2f"]
 size = Vector3(20.1394, 1, 20.1706)
@@ -52,3 +53,6 @@ environment = SubResource("Environment_1erd0")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, -0.433013, 0.75, 0, 0, 0)
 shadow_enabled = true
+
+[node name="TestKnightEnemy" parent="." instance=ExtResource("3_p6so2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.97884, 0.5, 2.5252)

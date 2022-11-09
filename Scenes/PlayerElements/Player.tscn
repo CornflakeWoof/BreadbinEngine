@@ -1,20 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://b7hdb844rxjwt"]
+[gd_scene load_steps=9 format=3 uid="uid://b7hdb844rxjwt"]
 
 [ext_resource type="Script" path="res://Scripts/Actors/PlayerBase.gd" id="1_mrn12"]
 [ext_resource type="Script" path="res://Scripts/Actors/PlayerCamera.gd" id="2_xgfxi"]
-[ext_resource type="PackedScene" uid="uid://coc6v2aa1a8x4" path="res://Meshes/Test/fem_knight.tscn" id="4_1kdii"]
+[ext_resource type="PackedScene" uid="uid://bnsv488x8j2cf" path="res://Meshes/Test/fem_knight.tscn" id="4_1kdii"]
 [ext_resource type="Script" path="res://Scripts/Debug/Debug_OwnerVar.gd" id="4_h7cfl"]
+[ext_resource type="Script" path="res://Scripts/Combat/ActorHitArea_Base.gd" id="5_lotsw"]
+[ext_resource type="PackedScene" uid="uid://burq6rcgw0wdv" path="res://Scenes/Debug/ActorDebug3D.tscn" id="6_vjvb1"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_gauop"]
 height = 1.72915
 radius = 0.279917
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gtjdi"]
+radius = 0.192762
+height = 1.51305
+
 [node name="Player" type="CharacterBody3D"]
+collision_mask = 9
 script = ExtResource("1_mrn12")
 Player_Number = 1
 Actor_Team = 1
 ActorMeshPath = NodePath("FemKnight")
-starting_speed = 4
 
 [node name="Camroot" type="Node3D" parent="."]
 script = ExtResource("2_xgfxi")
@@ -106,4 +112,24 @@ script = ExtResource("4_h7cfl")
 VariableName = "Current Animation Name"
 actualvariable = "CurrentAnimationName"
 
+[node name="Label9" type="Label" parent="."]
+offset_left = 56.0
+offset_top = 797.0
+offset_right = 321.0
+offset_bottom = 875.0
+script = ExtResource("4_h7cfl")
+VariableName = "Current Attack Animation"
+actualvariable = "CurrentAttackAnimation"
+
 [node name="FemKnight" parent="." instance=ExtResource("4_1kdii")]
+
+[node name="ActorHitArea" type="Area3D" parent="."]
+script = ExtResource("5_lotsw")
+ConnectedToActorPath = NodePath("..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ActorHitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.830464, 0)
+shape = SubResource("CapsuleShape3D_gtjdi")
+
+[node name="ActorDebug3D" parent="." instance=ExtResource("6_vjvb1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501503, 1.35545, 0)

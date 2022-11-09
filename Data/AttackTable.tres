@@ -1,0 +1,4 @@
+AttackID,AttackAnimationPath,AttackDamageMultiplier
+100,HumanoidBase/sword_rslash,1.1
+101,HumanoidBase/sword_backslash,1.0
+102,HumanoidBase/sword_twirlslash,1.0

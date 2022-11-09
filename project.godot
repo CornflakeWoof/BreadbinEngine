@@ -9,10 +9,20 @@
 config_version=5
 
 _global_script_classes=[{
+"base": "ActorBase",
+"class": &"AIActor",
+"language": &"GDScript",
+"path": "res://Scripts/Actors/Actor_AI.gd"
+}, {
 "base": "AnimationPlayer",
 "class": &"ActorAnimationPlayer",
 "language": &"GDScript",
 "path": "res://Scripts/Actors/ActorAnimationPlayer.gd"
+}, {
+"base": "AnimationTree",
+"class": &"ActorAnimationTree",
+"language": &"GDScript",
+"path": "res://Scripts/Actors/ActorAnimationTree.gd"
 }, {
 "base": "CharacterBody3D",
 "class": &"ActorBase",
@@ -27,17 +37,47 @@ _global_script_classes=[{
 "base": "Node3D",
 "class": &"ActorModel",
 "language": &"GDScript",
-"path": "res://Scripts/Actors/ActorModelBase.gd"
+"path": "res://Scripts/Actors/Models/ActorModelBase.gd"
 }, {
 "base": "Node3D",
 "class": &"BGProp_Breakable",
 "language": &"GDScript",
 "path": "res://Scripts/Actors/BGProp_Breakable.gd"
 }, {
+"base": "Area3D",
+"class": &"Hitbox_AIChecker",
+"language": &"GDScript",
+"path": "res://Scripts/Actors/AI/AI_CheckerHitbox.gd"
+}, {
+"base": "Area3D",
+"class": &"Hitbox_Damage",
+"language": &"GDScript",
+"path": "res://Scripts/Combat/Hitbox_Damage.gd"
+}, {
+"base": "Resource",
+"class": &"ItemBase",
+"language": &"GDScript",
+"path": "res://Scripts/Inventory/InventoryBase.gd"
+}, {
 "base": "ActorBase",
 "class": &"PlayerActor",
 "language": &"GDScript",
 "path": "res://Scripts/Actors/PlayerBase.gd"
+}, {
+"base": "ActorModel",
+"class": &"PlayerModel",
+"language": &"GDScript",
+"path": "res://Scripts/Actors/Models/PlayerModelBase.gd"
+}, {
+"base": "Node3D",
+"class": &"Spawner",
+"language": &"GDScript",
+"path": "res://Scripts/LevelManager/Spawner_Base.gd"
+}, {
+"base": "Node3D",
+"class": &"VFX_Base",
+"language": &"GDScript",
+"path": "res://Scripts/VFX/VFXBase.gd"
 }, {
 "base": "Node",
 "class": &"WeaponBase",
@@ -45,12 +85,20 @@ _global_script_classes=[{
 "path": "res://Scripts/Combat/Weapon_Base.gd"
 }]
 _global_script_class_icons={
+"AIActor": "",
 "ActorAnimationPlayer": "",
+"ActorAnimationTree": "",
 "ActorBase": "",
 "ActorHitArea": "",
 "ActorModel": "",
 "BGProp_Breakable": "",
+"Hitbox_AIChecker": "",
+"Hitbox_Damage": "",
+"ItemBase": "",
 "PlayerActor": "",
+"PlayerModel": "",
+"Spawner": "",
+"VFX_Base": "",
 "WeaponBase": ""
 }
 
@@ -70,6 +118,7 @@ buses/default_bus_layout="res://Sound/bbengine_audiobuses.tres"
 GlobalActorSettings="*res://Scripts/Globals/Global_Actor_Settings.gd"
 GlobalDisplaySettings="*res://Scripts/Globals/Global_Display_Settings.gd"
 GlobalSystemSettings="*res://Scripts/Globals/Global_System_Settings.gd"
+AttackTable="*res://Scripts/Globals/AttackTable.gd"
 
 [display]
 
@@ -172,8 +221,10 @@ P1_Jump={
 
 3d_physics/layer_3="ActorCollision"
 3d_physics/layer_4="World"
+3d_physics/layer_5="Killbox"
 3d_physics/layer_10="DamageHitboxes"
 3d_physics/layer_11="ActorHitboxes"
+3d_physics/layer_12="BreakableObjects"
 
 [rendering]
 

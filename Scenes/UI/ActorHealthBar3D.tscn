@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://wamxx1xkq60y"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_lwwjb"]
+
+[node name="ActorHealthBar3D" type="Node3D"]
+
+[node name="Label3D" type="Label3D" parent="."]
+text = "0"
+
+[node name="ActorHealthBar_Backing" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_lwwjb")

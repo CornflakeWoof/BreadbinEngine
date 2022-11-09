@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://o850r88qgrdg"]
+
+[ext_resource type="Script" path="res://Scripts/Actors/Actor_AI.gd" id="1_1mmnv"]
+[ext_resource type="PackedScene" uid="uid://sat3v8q7cphv" path="res://Meshes/Test/breadbin_knight.tscn" id="2_71ikc"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_yvw5t"]
+height = 1.33133
+radius = 0.291099
+
+[node name="TestKnightEnemy" type="CharacterBody3D"]
+script = ExtResource("1_1mmnv")
+NPC_Tier = 1
+AttackChanceLight = 50
+AttackChanceMid = 25
+AttackChanceHeavy = 25
+LightAttackIDs = [100]
+MidAttackIDs = [101]
+HeavyAttackIDs = ["102"]
+Actor_Team = 5
+ActorMeshPath = NodePath("BreadbinKnight")
+Max_HP = 1
+
+[node name="BreadbinKnight" parent="." instance=ExtResource("2_71ikc")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.667448, 0)
+shape = SubResource("CylinderShape3D_yvw5t")

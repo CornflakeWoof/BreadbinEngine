@@ -13,6 +13,7 @@ var jump_possible : bool = false
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 
 func _ready():
+	process_priority = (100-Player_Number)
 	direction = Vector3.BACK.rotated(Vector3.UP, $Camroot/h.global_transform.basis.get_euler().y)
 	setup_initial_values()
 	create_timer("StartSprintingTimer",0.5,true,false)
@@ -24,6 +25,7 @@ func handle_player_input(timescale:float):
 	var PlayerRight:String = "P"+str(Player_Number)+"_MoveRight"
 	var PlayerUp:String = "P"+str(Player_Number)+"_MoveUp"
 	var PlayerDown:String = "P"+str(Player_Number)+"_MoveDown"
+	var TreeRootMotion:Transform3D = ActorAnimationTreeNode.get_root_motion_transform()
 	
 	var h_rot = $Camroot/h.global_transform.basis.get_euler().y
 	
@@ -47,11 +49,17 @@ func handle_player_input(timescale:float):
 
 	horizontal_velocity = horizontal_velocity.lerp(direction.normalized() * current_speed * movement_multiplier, acceleration * timescale)
 	
-	velocity.z = horizontal_velocity.z + vertical_velocity.z
-	velocity.x = horizontal_velocity.x + vertical_velocity.x
+	velocity.z = horizontal_velocity.z + vertical_velocity.z + TreeRootMotion.origin.z
+	velocity.x = horizontal_velocity.x + vertical_velocity.x + TreeRootMotion.origin.x
 	velocity.y = vertical_velocity.y
 
 	move_and_slide()
+
+func handle_player_tree_animation():
+	if abs(velocity.x) > 1 || abs(velocity.z) > 1:
+		ActorAnimationTreeNode.set("parameters/PlayerState/current", "state 1")
+	else:
+		ActorAnimationTreeNode.set("parameters/PlayerState/current", "state 0")
 	
 func handle_player_animation():
 	var NewAnimationName:String
@@ -60,6 +68,9 @@ func handle_player_animation():
 	#THE IDLE ANIMATION NAME (SEE ACTORBASE.GD)
 	if NewAnimationName == "" or ActorAnimationPlayerNode.has_animation(str(NewAnimationName)) == false:
 		NewAnimationName = IdleAnimationName
+	
+	if CanChangeAnimation == true:
+		CanChangeAnimation = false
 	
 	match ActorState:
 		"rolling":
@@ -76,93 +87,71 @@ func handle_player_animation():
 					NewAnimationName = "HumanoidBase/run"
 			else:
 				NewAnimationName = IdleAnimationName
-		
-	if NewAnimationName != CurrentAnimationName:
+	match ActorState:
+		"rolling":
+			if roll_queued == true:
+				CanChangeAnimation = true
+		_:
+			if NewAnimationName != CurrentAnimationName:
+				CanChangeAnimation = true
+	if CanChangeAnimation == true:
 		call_deferred("play_actormesh_animation",NewAnimationName)
 
 func play_actormesh_animation(animationtoplay:String):
 	ActorMesh.get_node("AnimationPlayer").play(animationtoplay)
 	CurrentAnimationName = animationtoplay
 
-func setup_attack_animation(input:String="R1",LeftWeapon:bool=false):
+func setup_attack_animation(inputstring:String="R1"):
 
 	var NextAttackAnimation : String = ""
-	var inputstring : String = input
-	var previousinput : String = ""
-	var twohandstring: String = "1H"
-	var WeaponToQuery = ActorMesh.Current_Weapon_R
-	var FinalAnimationString : String = ""
-	var SpecialAttackQueued : bool = false
+	var AttackArray = construct_attack_array_to_query(inputstring)
+	var AttackResult : int
+	var Attack_Table = get_node("/root/AttackTable").attacktable
 	
-	#CHECK IF WE'VE ALREADY GOT AN ATTACK QUEUED
-	#AND END THE FUNCTION IF SO TO STOP US CONFUSING
-	#THE SYSTEM
-	
-	if previousinput == inputstring:
-		if attack_queued == true:
-			return
-	else:
-		previousinput = inputstring
-	
-	#IF WE TRY AND ATTACK WHILE WE CAN'T COMBO, QUEUE AN ATTACK TO DO WHEN WE CAN
-	if can_combo==false:
-		attack_queued = true
-	
-	print(current_combo)
-	
-	#TO GET OUR NEXT ATTACK ANIMATION, WE CONSTRUCT A STRING THAT'LL BE THE
-	#VARIABLE NAME WE ASK OUR CURRENT WEAPON FOR THE VALUE OF AND PASS THE
-	#ANIMATION NAME IT HOPEFULLY RETURNS TO OUR ANIMATION PLAYER TO PLAY IT
-	
-	#FIRST WE ASK WHICH WEAPON WE'RE QUERYING
-	if LeftWeapon == true:
-		WeaponToQuery = ActorMesh.Current_Weapon_L
-	
-	#THEN CONSTRUCT WHETHER WE'RE ASKING FOR A 2H OR 1H ATTACK
-	if Two_Handing_State != 0:
-		twohandstring = "2H"
-	
-	#NOW WE DETERMINE IF THERE ARE ANY SPECIAL CIRCUMSTANCES PRESENT -
-	#IF WE'RE FALLING QUICKLY ENOUGH WE OVERRIDE EVERYTHING ELSE TO
-	#ASK THE WEAPON FOR ITS FALLING ATTACK, IF WE'RE SPRINTING WE ASK
-	#FOR ITS RUNNING ATTACK ETC. AND WE ANNOUNCE WE'RE NOT ASKING FOR AN R1/L1 ATTACK NAME
-	#ARRAY BUT A R1/L1 SPECIAL ATTACK STRING
-	if abs(velocity.y) > 2:
-		FinalAnimationString = "Weapon_"+twohandstring+"_FallingAttack"
-		SpecialAttackQueued = true
-	elif sprinting == true:
-		FinalAnimationString = "Weapon_"+twohandstring+"_RunningAttack"
-		SpecialAttackQueued = true
-	else:
-		FinalAnimationString = "Weapon_"+twohandstring+"_"+inputstring
-	
-	print_debug(FinalAnimationString)
-	#IF WE DON'T HAVE A SPECIAL ATTACK QUEUED, ASK OUR QUERIED WEAPON FOR THE
-	#NAME OF THE ANIMATION AT WHATEVER THE CURRENT COMBO VALUE'S PLACE IS IN
-	#THE ARRAY. 
-	if SpecialAttackQueued == false:
-		var CurrentQueryArraySize = get_node(WeaponToQuery.get_path()).get(FinalAnimationString).size()
-		#print_debug("Size of "+str(FinalAnimationString)+": "+str(CurrentQueryArraySize))
-		if current_combo > CurrentQueryArraySize-1:
-			#print_debug(str(FinalAnimationString)+str(current_combo)+" not found, defaulting to 0")		
-			current_combo = 0
-		NextAttackAnimation = str(WeaponToQuery.get(FinalAnimationString)[current_combo])
-	else:
-		if ActorAnimationPlayerNode.has_animation(WeaponToQuery.get(FinalAnimationString)):
-			NextAttackAnimation = str(WeaponToQuery.get(FinalAnimationString))
-		else:
-			NextAttackAnimation = IdleAnimationName
+	match Two_Handing_State:
+		2:
+			Current_Weapon = L_Weapon
+		1:
+			Current_Weapon = R_Weapon
+		_:
+			Current_Weapon = R_Weapon
+			match inputstring:
+				"L1","L2":
+					Current_Weapon = L_Weapon
+	if current_combo > Current_Weapon.get(AttackArray).size()-1:
 		current_combo = 0
+	AttackResult=Current_Weapon.get(AttackArray)[current_combo]
 	
-	handle_actor_state("attacking")
-	current_combo += 1
-	if attack_queued == true:
-		QueuedAttackAnimation = NextAttackAnimation
-	else:
-		CurrentAttackAnimation = NextAttackAnimation			
+	NextAttackAnimation = get_attack_name_from_attacktable(AttackResult)
+	#print_debug(NextAttackAnimation)
+
+	if can_combo == true:
+		CurrentAttackAnimation = NextAttackAnimation
+		handle_actor_state("attacking")
 		can_combo = false
-			
-	#print_debug(CurrentAttackAnimation)
+		current_combo += 1
+	
+func construct_attack_array_to_query(inputstring:String="R1"):
+	var AttackArrayNameToReturn : String = ""
+	var TwoHandedStatus : String = ""
+	var InputStatus : String = ""
+	
+	TwoHandedStatus = "1H" if Two_Handing_State == 0 else "2H"
+	
+	if !is_on_floor() and velocity.y < 2:
+		InputStatus="FallingAttack"
+	elif sprinting == true:
+		InputStatus="RunningAttack"
+		sprinting = false
+	else:
+		InputStatus=inputstring
+	##NEED TO ADD BACKSTABS ETC LATER
+	
+	
+	AttackArrayNameToReturn = "Weapon_"+str(TwoHandedStatus)+"_"+str(InputStatus)
+	#print(AttackArrayNameToReturn)
+	
+	return AttackArrayNameToReturn
 	
 func handle_attack_inputs():
 	var R1 : String = "P"+str(Player_Number)+"_R1"
@@ -172,16 +161,18 @@ func handle_attack_inputs():
 	var Roll : String = "P"+str(Player_Number)+"_Roll"
 	
 	if Input.is_action_just_pressed(Roll):
-		roll_queued = true
-		handle_actor_state("rolling")
+		if is_on_floor():
+			roll_queued = true
+			rolling = true
+			handle_actor_state("rolling")
 	if Input.is_action_just_pressed(R1):
-		setup_attack_animation("R1",false)
+		setup_attack_animation("R1")
 	if Input.is_action_just_pressed(R2):
-		setup_attack_animation("R2",false)
+		setup_attack_animation("R2")
 	if Input.is_action_just_pressed(L1):
-		setup_attack_animation("L1",false)
+		setup_attack_animation("L1")
 	if Input.is_action_just_pressed(L2):
-		setup_attack_animation("L2",false)
+		setup_attack_animation("L2")
 
 func handle_player_rotation(timescale:float):
 	if abs(velocity.x) > 1 or abs(velocity.z) > 1:
@@ -237,16 +228,15 @@ func _PostSprintJumpWindowTimer_timeout():
 
 
 
-func _process(_delta):
-	call_deferred("handle_player_animation")
+func _custom_process(_delta):
+	call_deferred("handle_player_tree_animation")
 	if alive == true:
 		handle_running_or_jumping()
 		if ActorState != "rolling":
 			handle_attack_inputs()
 
-func _physics_process(delta):
+func _custom_physics_process(delta):
 	
-	handle_actor_gravity(delta)
 	handle_player_rotation(delta)
 	if Player_Number != 0 and alive==true:
 		handle_player_input(delta)
